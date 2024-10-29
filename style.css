@@ -3,3 +3,12 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+.cell {
+    position: absolute;
+    border: 1px solid black;
+
+    &.alive {
+        background-color: black;
+    }
+}
