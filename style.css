@@ -12,3 +12,8 @@
         background-color: black;
     }
 }
+
+button {
+    position: absolute;
+    bottom: 0;
+}
