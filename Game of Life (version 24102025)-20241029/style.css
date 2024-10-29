@@ -1,0 +1,17 @@
+body {
+    margin:0;
+}
+
+.cell {
+    position:absolute;
+    border:1px solid black;
+    box-sizing: border-box;
+
+    /* Temporaire */
+    /* width:30px; height:30px;
+    left:100px; top:200px; */
+}
+
+.cell.alive {
+    background-color:black;
+}

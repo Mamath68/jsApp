@@ -25,8 +25,6 @@
 *
 * */
 
-// console.dir(document.body);
-
 const cell_size = 30;
 const columns = 10;
 const lines = 10;
