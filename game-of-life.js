@@ -11,9 +11,9 @@
  */
 
 // Quelques "réglages" pour la grille de cellules :
-const cell_size = 30;
-const columns = 20;
-const lines = 20;
+const cell_size = 20;
+const columns = 30;
+const lines = 30;
 const period = 100;
 
 // Préparation d'un pseudo-constructeur de cellules :
@@ -63,10 +63,31 @@ function add_cell(new_x, new_y) {
         },
 
         count_alive_neighbors: function () {
-            // Déterminer les coordonnées des différentes voisines à tester
             let count = 0;
-            let george_x = [this.x - 1, this.x, this.x + 1];
-            let george_y = [this.y - 1, this.y, this.y + 1];
+
+            // Déterminer les coordonnées des différentes voisines à tester
+            /*
+            * Ci-dessous, on utilise des tests ternaires:
+            * (condition) ? valeur si condition validée : valeur si condition non validée
+            *
+            * Le but est assez proche d'un if (condition) {} else {}, mais on a plus la possibilité de "placer" directement une valeur ou une autre où l'ont veut (comme ici en guise d'élements d'un tableau).
+            *
+            * En fait, l'ensemble de l'expression finti par être remplacée par l'une des deux valeurs.
+            *
+            * Sans cela, on aurait été obligé, via un if classique, de commencer par créer un tableau vide, d'y ajouter les vlaeurs "manuellement" selon les valeurs/réponses aux tests.
+            *
+            * */
+            let george_x = [
+                (this.x > 0) ? this.x - 1 : columns - 1,
+                this.x,
+                (this.x < columns - 1) ? this.x + 1 : 0,
+            ];
+
+            let george_y = [
+                (this.y > 0) ? this.y - 1 : lines - 1,
+                this.y,
+                (this.y < lines - 1) ? this.y + 1 : 0,
+            ];
 
             for (let tested_y of george_y) {
                 for (let tested_x of george_x) {
@@ -122,30 +143,40 @@ for (let current_y = 0; current_y < lines; current_y++) {
 //console.log(cells);
 //console.log(cells[4][5]);
 
+let game_running = false;
+let life_cycle;
+let button = document.querySelector("button")
 // Mise en place du cycle (répétition d'instructions à intervalles régulièrs)
-document.querySelector("button").addEventListener("click", function () {
+button.addEventListener("click", function () {
 
-    setInterval(function () {
+    if (!game_running) {
+        button.textContent = "STOP"
+        life_cycle = setInterval(function () {
 
-        // Chaques cellule doit vérifier combien de cellules adjacentes sont en vie
-        for (let the_cell of cells_unsorted) {
-            if (the_cell.count_alive_neighbors() == 2) {
-                // La cellule garde son état actuel
-                the_cell.alive_next_turn = the_cell.alive;
-            } else if (the_cell.count_alive_neighbors() == 3) {
-                // La cellule devient vivante
-                the_cell.alive_next_turn = true;
-            } else {
-                // La cellule meurt
-                the_cell.alive_next_turn = false;
+            // Chaques cellule doit vérifier combien de cellules adjacentes sont en vie
+            for (let the_cell of cells_unsorted) {
+                if (the_cell.count_alive_neighbors() == 2) {
+                    // La cellule garde son état actuel
+                    the_cell.alive_next_turn = the_cell.alive;
+                } else if (the_cell.count_alive_neighbors() == 3) {
+                    // La cellule devient vivante
+                    the_cell.alive_next_turn = true;
+                } else {
+                    // La cellule meurt
+                    the_cell.alive_next_turn = false;
+                }
             }
-        }
 
-        for (let the_cell of cells_unsorted) {
-            the_cell.alive = the_cell.alive_next_turn;
-            the_cell.update_HTML();
-        }
-    }, period);
+            for (let the_cell of cells_unsorted) {
+                the_cell.alive = the_cell.alive_next_turn;
+                the_cell.update_HTML();
+            }
+        }, period);
+    } else {
+        clearInterval(life_cycle);
+        button.textContent = "START"
+    }
+    game_running = !game_running;
 })
 
 // [Le reste du code...]
